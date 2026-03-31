@@ -1,155 +1,88 @@
+<p align="center">
+  <img src="https://img.shields.io/badge/SLDTS-Sign%20Language%20Detection-blue?style=for-the-badge&logo=accessibility&logoColor=white" alt="SLDTS" />
+</p>
 
-# 🧠 Sign Language Detection and Translation System
+<h1 align="center">Sign Language Detection and Translation System</h1>
+<p align="center">
+  <strong>Real-time ASL recognition using MediaPipe, LSTM + Random Forest, and Gemini AI</strong>
+</p>
 
-[![Python](https://img.shields.io/badge/Python-3.8%2B-blue)](https://www.python.org/)
-[![OpenCV](https://img.shields.io/badge/OpenCV-4.5.5-orange)](https://opencv.org/)
-[![MediaPipe](https://img.shields.io/badge/MediaPipe-0.8.11-red)](https://google.github.io/mediapipe/)
-[![TensorFlow](https://img.shields.io/badge/TensorFlow-2.7.0-yellow)](https://www.tensorflow.org/)
-
-This project implements a real-time **American Sign Language (ASL)** detection and translation system using **computer vision** and **hybrid deep learning techniques**. It captures hand gestures from a webcam and translates them into text and speech with high accuracy and low latency.
-
----
-
-## 🚀 Features
-
-- 🔍 Real-time gesture recognition using webcam
-- 🤟 Recognition of ASL static alphabets (A–Z)
-- 🔊 Text-to-speech support for detected signs
-- 🔁 Bi-directional: Sign → Text/Speech and Speech → Sign
-- 🧠 Hybrid architecture combining LSTM + Random Forest
-- 📦 Modular codebase for easy extension and customization
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.8+-3776AB?style=flat-square&logo=python&logoColor=white" />
+  <img src="https://img.shields.io/badge/TensorFlow-2.7-FF6F00?style=flat-square&logo=tensorflow&logoColor=white" />
+  <img src="https://img.shields.io/badge/MediaPipe-Hands-red?style=flat-square" />
+  <img src="https://img.shields.io/badge/Flask-Web%20App-000?style=flat-square&logo=flask&logoColor=white" />
+  <img src="https://img.shields.io/badge/Gemini-AI%20Correction-4285F4?style=flat-square&logo=google&logoColor=white" />
+</p>
 
 ---
 
-## 📁 Project Structure
+## Overview
+
+Real-time American Sign Language (ASL) detection and translation system. Captures hand gestures from a webcam, classifies them into ASL letters (A-Z) using a hybrid LSTM + Random Forest model, and converts detected signs into corrected text and speech.
+
+## Features
+
+- Real-time gesture recognition via webcam using **MediaPipe Hands** (21 keypoints)
+- Hybrid classification: **LSTM neural network** + **Random Forest** ensemble
+- Gemini AI-powered **text correction** for natural sentence formation
+- **Text-to-Speech** output using gTTS
+- **Multi-language translation** support
+- **Spell correction** using SymSpell for noisy predictions
+- Web-based interface with Flask
+
+## Technical Approach
+
+1. **Hand Landmark Detection** — MediaPipe extracts 21 3D hand keypoints at 30+ FPS
+2. **Feature Engineering** — Landmark coordinates normalized and scaled
+3. **Classification** — Keras LSTM model (`all-letter-model.h5`) with sklearn scaler/encoder
+4. **Post-Processing** — SymSpell spell correction + Gemini AI sentence correction
+5. **Output** — Text display + gTTS speech synthesis + translation
+
+## Project Structure
 
 ```
+SLDTS/
+├── app.py                              # Flask application (main entry point)
+├── all-letter-model.h5                 # Trained LSTM model weights
+├── all-letter-model_scaler_and_encoder.pkl  # Feature scaler + label encoder
+├── static/
+│   ├── css/                            # Stylesheets
+│   └── js/                             # Client-side webcam + prediction logic
+├── templates/
+│   └── index.html                      # Web interface
+└── .gitignore
+```
 
-Sign-Language-Detection-and-Translation/
-├── dataset/                   # Class-wise training images (e.g., A/, B/)
-├── models/                    # Pretrained models (.h5 and .pkl)
-├── utils/                     # Feature extraction and evaluation scripts
-│   ├── data\_processing.py
-│   └── model\_evaluation.py
-├── training/                  # Training scripts
-│   ├── train\_lstm.py
-│   └── train\_rf.py
-├── realtime\_detection.py      # Main app for real-time inference
-├── requirements.txt           # Python dependencies
-└── README.md
+## Tech Stack
 
-````
+| Component | Technology |
+|:----------|:-----------|
+| **Detection** | MediaPipe Hands (21 keypoints) |
+| **Model** | TensorFlow/Keras LSTM + scikit-learn Random Forest |
+| **AI Correction** | Google Gemini 1.5 Pro |
+| **Spell Check** | SymSpell |
+| **Translation** | Python Translate |
+| **TTS** | gTTS (Google Text-to-Speech) |
+| **Backend** | Flask + Flask-CORS |
+| **Frontend** | HTML/CSS/JavaScript |
 
----
-
-## 🧠 Technical Approach
-
-### 1. **Hand Landmark Detection**
-- Utilized **MediaPipe Hands** to extract 21 hand keypoints in real-time.
-- Achieves >30 FPS on standard CPUs without requiring GPU acceleration.
-
-### 2. **Feature Engineering**
-- **Geometric features** calculated:
-  - Angles between key joints
-  - Distances between fingertips and wrist
-- Features normalized for scale and position independence.
-
-### 3. **Model Architectures**
-- **Random Forest** (model.pkl):
-  - Used for efficient classification on static gestures.
-  - 100 trees, Gini impurity, feature bagging.
-- **LSTM** (model.h5):
-  - Used for sequential gesture modeling across video frames.
-  - Sequence length: 30 frames.
-- **Hybrid System**:
-  - Combines predictions from both models for higher accuracy and adaptability.
-
----
-
-## ⚙️ Installation
+## Getting Started
 
 ```bash
-# Clone the repository
-git clone https://github.com/rupeshbharambe24/Sign-Language-Detection-and-Translation.git
-cd Sign-Language-Detection-and-Translation
+git clone https://github.com/rupeshbharambe24/SLDTS__Sign-Language-Detection-and-Translation.git
+cd SLDTS__Sign-Language-Detection-and-Translation
+pip install flask flask-cors opencv-python mediapipe tensorflow scikit-learn symspellpy gtts translate google-generativeai python-dotenv
+```
 
-# Install dependencies
-pip install -r requirements.txt
-````
+Create a `.env` file:
+```
+GEMINI_API_KEY=your_gemini_api_key
+```
 
-> 📝 Make sure your system has a webcam and Python 3.8+.
-
----
-
-### 📊 Training Models
-
+Run:
 ```bash
-# Train Random Forest
-python training/train.py --data_path dataset/ --trees 100
-
-# Train LSTM
-python training/train.py --data_path dataset/ --epochs 50
+python app.py
 ```
 
----
-
-## 📊 Performance Metrics
-
-| Model         | Accuracy | Inference Time |
-| ------------- | -------- | -------------- |
-| LSTM          | 94.2%    | 18ms           |
-| Random Forest | 89.7%    | 8ms            |
-| Hybrid        | 96.1%    | 22ms           |
-
----
-
----
-
-## ❗ Limitations & Future Work
-
-* Limited to **static hand gestures** for now but with the help of UI, can form sentences or words.
-* Only covers the **ISL alphabet** (A–Z) & numbers.
-* Plans to:
-  * Add **phrase-level** and **dynamic gesture** support.
-  * Localize for **multi-language translation**.
-
----
-
-## 🧾 Dependencies
-
-* Python 3.8+
-* OpenCV 4.5.5
-* MediaPipe 0.8.11
-* TensorFlow 2.7.0
-* Scikit-learn 1.0.2
-* PyAudio 0.2.11
-
----
-
-## 👥 Contributors
-
-* **Rupesh Bharambe** – AI/ML, DL, Web Dev, Deployment, etc
-* **Harshal More** - AIML, Data Analysis
-* **Onkar Kalyankar** - AIML, Data Analysis
-* **Aniket Wahul** - Web Developer
-
----
-
-## 📜 License
-
-This project is licensed under the [MIT License](LICENSE).
-
----
-
-## 🙏 Acknowledgments
-
-* Google MediaPipe for robust hand tracking
-* TensorFlow & Scikit-learn for model building
-* OpenCV for real-time video processing
-* ASL Dataset providers and open-source communities
-
----
-
-> 🔁 Feel free to fork, contribute, or customize the system for regional sign languages or mobile deployment. Pull requests are always welcome!
-
-```
+Open `http://localhost:5000` in your browser.
