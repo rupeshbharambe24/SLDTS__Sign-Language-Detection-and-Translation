@@ -154,7 +154,11 @@ def serialize_landmarks(multi_hand_landmarks):
     return serialized
 
 sym_spell = SymSpell(max_dictionary_edit_distance=2, prefix_length=7)
-dictionary_path = "frequency_dictionary_en_82_765.txt"  # Ensure this file exists
+dictionary_path = "frequency_dictionary_en_82_765.txt"
+if not os.path.exists(dictionary_path):
+    # Fall back to the English frequency dictionary bundled with symspellpy
+    from importlib.resources import files
+    dictionary_path = str(files("symspellpy") / "frequency_dictionary_en_82_765.txt")
 sym_spell.load_dictionary(dictionary_path, term_index=0, count_index=1)
 
 def correct_and_expand_text(text):
