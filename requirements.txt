@@ -1,0 +1,13 @@
+# Inferred from app.py imports (model was saved with Keras 3 / scikit-learn 1.6)
+flask
+flask-cors
+opencv-python
+mediapipe
+numpy
+tensorflow>=2.16
+scikit-learn==1.6.1
+symspellpy
+gTTS
+translate
+google-generativeai
+python-dotenv
